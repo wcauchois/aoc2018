@@ -1,5 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env PYTHONPATH=.. python
 from itertools import  cycle
+from lib import *
 
 def Input(filename):
   with open(filename, 'r') as fp:
