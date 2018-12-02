@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use std::io;
 use std::fs::File;
 use std::io::BufRead;
@@ -22,7 +24,7 @@ fn get_lines(path: &str) -> io::Result<Vec<String>> {
     reader.lines().collect::<io::Result<Vec<String>>>()
 }
 
-fn main() {
+fn part_one() {
     let mut num_twos = 0;
     let mut num_threes = 0;
     let lines = get_lines("input.txt").unwrap();
@@ -36,4 +38,41 @@ fn main() {
         }
     }
     println!("{}", num_twos * num_threes);
+}
+
+// If they differ by one char, returns the index of that char.
+fn differs_by_one_char(s1: &str, s2: &str) -> Option<usize> {
+    if s1.len() != s2.len() {
+        None
+    } else {
+        let differing_chars: Vec<(usize, (char, char))> = s1.chars().zip(s2.chars()).enumerate().filter(|(_, (c1, c2))| c1 != c2).collect();
+        match differing_chars.as_slice() {
+            [(i, (_, _))] => Some(*i),
+            _ => None
+        }
+    }
+}
+
+fn exclude_index(s: &str, i: usize) -> String {
+    let (first, _) = s.split_at(i);
+    let (_, second) = s.split_at(i + 1);
+    format!("{}{}", first, second)
+}
+
+fn part_two() {
+    let mut candidates = get_lines("input.txt").unwrap();
+    while !candidates.is_empty() {
+        let (first, elements) = candidates.split_first().unwrap();
+        for elem in elements {
+            if let Some(i) = differs_by_one_char(first, elem) {
+                println!("{}", exclude_index(first, i));
+                return
+            }
+        }
+        candidates.remove(0);
+    }
+}
+
+fn main() {
+    part_two()
 }
